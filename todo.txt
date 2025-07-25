@@ -1,0 +1,111 @@
+🧠 Project Goal
+Build a full-stack AI-Powered Resume Builder using Next.js, React, Tailwind CSS, OpenAI API, and PDF export. The app will:
+
+Let users fill out resume data in sections
+
+Generate resume suggestions via AI (OpenAI)
+
+Live-preview the resume
+
+Export it to PDF
+
+🔧 General Stack
+Frontend: React + Next.js + Tailwind CSS
+
+State Management: Zustand
+
+PDF Export: @react-pdf/renderer
+
+AI Integration: OpenAI API (gpt-4o mini)
+
+🪄 Step-by-Step Prompts for Cursor (AI Editor)
+🧱 Step 1: Project Scaffold
+🗣 Prompt to Cursor:
+
+Create a new Next.js project with TypeScript and Tailwind CSS configured. The project is named resume-builder. Include a basic layout with a header, sidebar, and main content area.
+
+✍️ Step 2: Form Sections (Personal Info, Experience, Education)
+🗣 Prompt to Cursor:
+
+Build a multi-step form UI with the following sections: Personal Info, Education, Work Experience, Skills. Each section should be a separate component. Use Tailwind for styling and Zustand for managing form state across steps.
+
+🤖 Step 3: AI Integration (OpenAI Suggestions)
+🗣 Prompt to Cursor:
+
+Create a utility function in lib/openai.ts that uses OpenAI API to generate bullet points for a resume based on user job title and experience. Use fetch with an environment variable for the API key.
+
+ts
+// Example function:
+export async function generateResumeContent(prompt: string) {
+  const res = await fetch('https://api.openai.com/v1/chat/completions', {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      model: "gpt-4",
+      messages: [{ role: "user", content: prompt }],
+    }),
+  });
+
+  const data = await res.json();
+  return data.choices[0].message.content;
+}
+👁️ Step 4: Live Resume Preview Component
+🗣 Prompt to Cursor:
+
+Create a ResumePreview component that displays the filled-in form data in a clean resume layout using Tailwind. Include sections like name, title, summary, experience, and education.
+
+📄 Step 5: PDF Export
+🗣 Prompt to Cursor:
+
+Add a button to export the resume preview to PDF using @react-pdf/renderer. Create a new components/ResumePDF.tsx to define the layout for export.
+
+
+🎨 Step 6: Theme Switcher
+🗣 Prompt to Cursor:
+
+Add a toggle to switch between light and dark themes. Use Tailwind's dark mode support (dark: class) and store the theme in Zustand or localStorage.
+
+🚀 Step 7: Deployment & Hosting (Your Proxmox Server)
+🗣 Prompt to Cursor (for Docker setup):
+
+Add a Dockerfile and docker-compose.yml to containerize the app. The container should expose port 3000 and use Node 18 base image. Configure production build inside Dockerfile.
+
+🗣 Prompt to Cursor (for CI/CD):
+
+Create a GitHub Actions workflow to build the Docker image and deploy it to my self-hosted server using SSH or GitHub self-hosted runner.
+
+✅ BONUS PROMPTS
+🧪 Add Validation with React Hook Form
+Use react-hook-form for all form sections with Zod validation.
+
+💡 Use GPT for Auto-Summary
+Ask OpenAI to summarize the user's resume in a professional profile paragraph.
+
+ts
+Prompt example:
+"Summarize this resume into a 2–3 line professional summary:\n\n[USER DATA]"
+
+
+
+🗂️ Suggested File Structure
+
+resume-builder/
+├── components/
+│   ├── forms/
+│   ├── ResumePreview.tsx
+│   └── ResumePDF.tsx
+├── lib/
+│   └── openai.ts
+├── pages/
+│   ├── index.tsx
+│   └── api/
+│       └── openai.ts
+├── store/
+│   └── resumeStore.ts
+├── styles/
+├── .env.local
+├── Dockerfile
+└── tailwind.config.ts

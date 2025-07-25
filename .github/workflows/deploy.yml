@@ -1,0 +1,81 @@
+name: Deploy Resume Builder
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+        
+    - name: Install dependencies
+      run: npm ci
+      
+    - name: Run linter
+      run: npm run lint
+      
+    - name: Build application
+      run: npm run build
+      env:
+        OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+
+  deploy:
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Build Docker image
+      run: |
+        docker build -t resume-builder:latest .
+        docker save resume-builder:latest > resume-builder.tar
+        
+    - name: Deploy to server
+      uses: appleboy/ssh-action@v1.0.0
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USERNAME }}
+        key: ${{ secrets.SSH_KEY }}
+        port: ${{ secrets.PORT }}
+        script: |
+          # Stop existing container
+          docker stop resume-builder || true
+          docker rm resume-builder || true
+          
+          # Load new image
+          docker load < /tmp/resume-builder.tar
+          
+          # Run new container
+          docker run -d \
+            --name resume-builder \
+            --restart unless-stopped \
+            -p 3000:3000 \
+            -e OPENAI_API_KEY="${{ secrets.OPENAI_API_KEY }}" \
+            resume-builder:latest
+            
+    - name: Copy Docker image to server
+      uses: appleboy/scp-action@v0.1.4
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USERNAME }}
+        key: ${{ secrets.SSH_KEY }}
+        port: ${{ secrets.PORT }}
+        source: "resume-builder.tar"
+        target: "/tmp/" 

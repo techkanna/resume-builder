@@ -1,0 +1,21 @@
+version: '3.8'
+
+services:
+  resume-builder:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+    volumes:
+      - ./.env.local:/app/.env.local:ro
+    restart: unless-stopped
+    networks:
+      - resume-builder-network
+
+networks:
+  resume-builder-network:
+    driver: bridge 
