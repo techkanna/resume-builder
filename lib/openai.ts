@@ -30,12 +30,13 @@ export async function generateResumeContent(prompt: string): Promise<string> {
 }
 
 export async function generateJobDescriptionBullets(jobTitle: string, company: string, responsibilities: string): Promise<string[]> {
-  const prompt = `Create 3-5 professional resume bullet points for a ${jobTitle} position at ${company}. Base the content on these responsibilities: ${responsibilities}. 
+  const prompt = `Create 3-5 professional resume bullet points for a ${jobTitle} position at ${company}. Base the content on these responsibilities: ${responsibilities}.
   
-  Format each bullet point to:
-  - Start with a strong action verb
+  Guidelines:
+  - Start each bullet with a strong action verb
   - Include quantifiable achievements when possible
-  - Be concise and impactful
+  - Keep each bullet concise (max 25 words) and impactful
+  - Ensure the text is completely free of spelling or grammatical errors
   - Focus on results and accomplishments
   
   Return only the bullet points, one per line, without bullet symbols.`
@@ -56,7 +57,7 @@ export async function generateProfessionalSummary(personalInfo: any, experience:
   Recent Experience: ${experience.slice(0, 2).map(exp => `${exp.jobTitle} at ${exp.company}`).join(', ')}
   Education: ${education.map(edu => `${edu.degree} from ${edu.school}`).join(', ')}
   
-  Create a 2-3 sentence professional summary that highlights key qualifications, experience, and career objectives. Make it compelling and tailored to their background.`
+  Write a compelling 2–3 sentence professional summary that highlights key qualifications, experience, and career objectives. The text must be tailored to their background and contain zero spelling or grammatical errors.`
 
   try {
     return await generateResumeContent(prompt)

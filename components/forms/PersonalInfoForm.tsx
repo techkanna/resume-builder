@@ -170,6 +170,7 @@ export default function PersonalInfoForm() {
             {...register('summary')}
             rows={4}
             className="form-input resize-none"
+            spellCheck={true}
             placeholder="Brief overview of your professional background and career objectives..."
           />
           <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">

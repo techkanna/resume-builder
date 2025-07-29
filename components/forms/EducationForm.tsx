@@ -215,6 +215,7 @@ export default function EducationForm() {
             {...register('relevantCoursework')}
             rows={3}
             className="form-input resize-none"
+            spellCheck={true}
             placeholder="Data Structures, Algorithms, Database Systems, Web Development..."
           />
         </div>

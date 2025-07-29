@@ -301,6 +301,7 @@ export default function WorkExperienceForm() {
                     onChange={(e) => updateBulletPoint(index, e.target.value)}
                     className="form-input resize-none"
                     rows={2}
+                    spellCheck={true}
                     placeholder="Describe your achievement or responsibility..."
                   />
                 </div>
