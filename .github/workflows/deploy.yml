@@ -25,6 +25,7 @@ jobs:
         run: |
           docker run -d \
             --name resume-builder \
+            --restart unless-stopped \
             -p 3001:3000 \
             -e OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }} \
             resume-builder
